@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Range Session 4 · 9 & 8 Iron</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161f;
+    --surface2: #191d28;
+    --border: #252a38;
+    --border2: #2f3548;
+    --green: #4dcc8a;
+    --green-dim: rgba(77,204,138,0.1);
+    --green-mid: rgba(77,204,138,0.2);
+    --amber: #f0a830;
+    --amber-dim: rgba(240,168,48,0.1);
+    --blue: #5b9cf6;
+    --blue-dim: rgba(91,156,246,0.1);
+    --red: #e85a5a;
+    --red-dim: rgba(232,90,90,0.1);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.1);
+    --teal: #2dd4bf;
+    --teal-dim: rgba(45,212,191,0.1);
+    --text: #e4e8f0;
+    --muted: #7a8299;
+    --dim: #2a3045;
+    --complete-bg: rgba(77,204,138,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  .top-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .top-bar-left { display: flex; flex-direction: column; gap: 2px; }
+  .top-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .top-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .progress-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-align: right; }
+  .progress-text span { display: block; font-size: 18px; font-weight: 500; color: var(--green); line-height: 1; }
+
+  .content { padding: 20px 16px; max-width: 520px; margin: 0 auto; }
+
+  /* THUMB */
+  .thumb-box {
+    background: var(--red-dim); border: 1px solid rgba(232,90,90,0.25);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .thumb-title { font-size: 13px; font-weight: 600; color: var(--red); margin-bottom: 3px; }
+  .thumb-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* WHY THIS SESSION */
+  .why-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .why-title { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--blue); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  .why-grid { display: flex; flex-direction: column; gap: 8px; }
+  .why-row { display: flex; gap: 12px; align-items: flex-start; }
+  .why-club { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
+  .why-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .why-text strong { color: var(--text); }
+
+  /* SCALE CARDS */
+  .scale-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+  }
+  .scale-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .scale-row { display: flex; gap: 4px; margin-bottom: 8px; }
+  .scale-block {
+    flex: 1; height: 28px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+  }
+  .scale-label { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  /* SESSION STRIP */
+  .session-strip {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 28px;
+  }
+  .strip-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; }
+  .strip-phases { display: flex; flex-direction: column; gap: 8px; }
+  .strip-phase { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .phase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .phase-right { display: flex; flex-direction: column; align-items: flex-end; margin-left: auto; gap: 2px; }
+  .phase-balls { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .phase-tag { font-family: 'DM Mono', monospace; font-size: 9px; padding: 1px 6px; border-radius: 3px; }
+
+  /* DRILL SECTION */
+  .drill-section { margin-bottom: 28px; }
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  /* DRILL CARD */
+  .drill-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; margin-bottom: 10px; overflow: hidden;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .drill-card.done { background: var(--complete-bg); border-color: rgba(77,204,138,0.25); }
+
+  .drill-header {
+    display: flex; align-items: flex-start; gap: 14px; padding: 16px;
+    cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none;
+  }
+
+  .drill-checkbox {
+    width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px; transition: all 0.2s; background: transparent; cursor: pointer;
+  }
+  .drill-card.done .drill-checkbox { background: var(--green); border-color: var(--green); }
+  .check-icon { width: 12px; height: 12px; opacity: 0; transition: opacity 0.2s; }
+  .drill-card.done .check-icon { opacity: 1; }
+
+  .drill-meta { flex: 1; min-width: 0; }
+  .drill-tag {
+    display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 5px;
+  }
+  .drill-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 3px; }
+  .drill-card.done .drill-title { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(77,204,138,0.5); }
+  .drill-subtitle { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  .expand-icon { color: var(--muted); font-size: 18px; margin-top: 2px; transition: transform 0.2s; flex-shrink: 0; }
+  .drill-card.open .expand-icon { transform: rotate(180deg); }
+
+  .drill-body { display: none; padding: 0 16px 16px 54px; }
+  .drill-card.open .drill-body { display: block; }
+
+  .drill-why {
+    font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 14px;
+    padding: 10px 12px; background: var(--surface2); border-radius: 8px; border-left: 2px solid var(--border2);
+  }
+
+  .steps-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; margin-top: 4px; }
+
+  .step { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%; font-family: 'DM Mono', monospace;
+    font-size: 11px; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px; font-weight: 500;
+  }
+  .step-text { font-size: 13px; color: var(--text); line-height: 1.6; padding-top: 2px; }
+  .step-text strong { color: var(--text); font-weight: 600; }
+  .step-text em { color: var(--muted); font-style: italic; }
+
+  .effort-inline {
+    display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px;
+    font-weight: 600; padding: 1px 7px; border-radius: 4px; vertical-align: middle;
+  }
+
+  /* PROGRESS TRACKER */
+  .ball-tracker {
+    background: var(--surface2); border-radius: 8px; padding: 12px 14px; margin-bottom: 12px;
+  }
+  .ball-tracker-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .ball-dots { display: flex; flex-wrap: wrap; gap: 5px; }
+  .ball-dot {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--dim); border: 1px solid var(--border2);
+    cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-family: 'DM Mono', monospace;
+  }
+  .ball-dot.hit { background: var(--green); border-color: var(--green); }
+  .ball-dot.hit-good { background: var(--blue); border-color: var(--blue); }
+  .ball-count { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .ball-count span { color: var(--green); font-weight: 500; }
+
+  /* MILESTONE */
+  .milestone {
+    background: var(--green-dim); border: 1px solid rgba(77,204,138,0.2);
+    border-radius: 8px; padding: 10px 12px; margin: 10px 0;
+    font-size: 12px; color: var(--text); line-height: 1.6; display: flex; gap: 8px; align-items: flex-start;
+  }
+  .milestone-icon { font-size: 16px; flex-shrink: 0; }
+
+  .target-box {
+    background: var(--green-dim); border: 1px solid rgba(77,204,138,0.2);
+    border-radius: 8px; padding: 10px 12px; margin-top: 12px;
+  }
+  .target-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--green); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+  .target-text { font-size: 12px; color: var(--text); line-height: 1.6; }
+
+  .tracer-box {
+    background: var(--blue-dim); border: 1px solid rgba(91,156,246,0.2);
+    border-radius: 8px; padding: 10px 12px; margin-top: 10px;
+  }
+  .tracer-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--blue); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+  .tracer-text { font-size: 12px; color: var(--text); line-height: 1.6; }
+
+  .warning-box {
+    background: var(--amber-dim); border: 1px solid rgba(240,168,48,0.2);
+    border-radius: 8px; padding: 10px 12px; margin-top: 10px;
+  }
+  .warning-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--amber); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+  .warning-text { font-size: 12px; color: var(--text); line-height: 1.6; }
+
+  /* FTP CHECK */
+  .ftp-check {
+    background: var(--surface2); border-radius: 8px; padding: 12px 14px; margin-top: 10px;
+  }
+  .ftp-check-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .ftp-options { display: flex; gap: 8px; }
+  .ftp-option { flex: 1; border-radius: 6px; padding: 8px 10px; font-size: 12px; line-height: 1.4; }
+  .ftp-val { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .ftp-desc { font-size: 11px; }
+
+  .reset-wrap { text-align: center; margin-top: 32px; }
+  .reset-btn {
+    background: none; border: 1px solid var(--border2); border-radius: 8px;
+    color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 20px; cursor: pointer;
+  }
+  .reset-btn:active { opacity: 0.6; }
+
+  .complete-banner {
+    display: none; background: var(--green-mid); border: 1px solid rgba(77,204,138,0.3);
+    border-radius: 12px; padding: 20px; text-align: center; margin-top: 24px;
+  }
+  .complete-banner.show { display: block; }
+  .complete-emoji { font-size: 32px; margin-bottom: 8px; }
+  .complete-title { font-size: 17px; font-weight: 600; color: var(--green); margin-bottom: 6px; }
+  .complete-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-left">
+    <div class="top-title">Session 4 · 9 iron & 8 iron</div>
+    <div class="top-sub">Blocked practice · 70 balls max</div>
+  </div>
+  <div class="progress-ring-wrap">
+    <div class="progress-text">
+      <span id="progress-count">0</span>
+      of <span id="total-count">0</span> done
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- THUMB -->
+  <div class="thumb-box">
+    <div>
+      <div class="thumb-title">⚠️ Left thumb — tape before you start</div>
+      <div class="thumb-body">Zinc oxide tape, 2–3 wraps over the top joint. Vaseline on raw skin first. 70 balls max today. Check tape hasn't shifted after the warm up phase.</div>
+    </div>
+  </div>
+
+  <!-- WHY THIS SESSION -->
+  <div class="why-card">
+    <div class="why-title">Why these clubs today — from your data</div>
+    <div class="why-grid">
+      <div class="why-row">
+        <div class="why-club" style="background:rgba(77,204,138,0.12);color:#4dcc8a;">7 iron</div>
+        <div class="why-text"><strong>Still warming into the pattern.</strong> First 5 shots last session: 4.53° FTP. Last 15: 1.99°. That 2.54° gap means it's not grooved from ball one yet. 15 warm up balls to establish it quickly.</div>
+      </div>
+      <div class="why-row">
+        <div class="why-club" style="background:rgba(91,156,246,0.12);color:#5b9cf6;">9 iron</div>
+        <div class="why-text"><strong>Promising but only 9 balls total.</strong> Showed 1.72° FTP last session but that's too small a sample to trust. Needs 30 balls of blocked practice to confirm it holds under volume.</div>
+      </div>
+      <div class="why-row">
+        <div class="why-club" style="background:rgba(240,168,48,0.12);color:#f0a830;">8 iron</div>
+        <div class="why-text"><strong>Most neglected club in your bag.</strong> Only 5 balls ever — all in session 1 at 10.25° FTP, your worst reading across any club. Zero balls in sessions 2 and 3. Needs a proper session today.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EFFORT + GRIP -->
+  <div class="scale-card" style="border-left:3px solid var(--amber); margin-bottom:10px;">
+    <div class="scale-title" style="color:var(--amber);">⚡ Effort ceiling — 70% all session</div>
+    <div class="scale-row">
+      <div class="scale-block" style="background:rgba(77,204,138,0.15);color:#4dcc8a;">50%</div>
+      <div class="scale-block" style="background:rgba(77,204,138,0.25);color:#4dcc8a;">60%</div>
+      <div class="scale-block" style="background:rgba(240,168,48,0.2);color:#f0a830;border:1.5px solid var(--amber);">70%</div>
+      <div class="scale-block" style="background:rgba(232,90,90,0.12);color:#e85a5a;">80%</div>
+      <div class="scale-block" style="background:rgba(232,90,90,0.2);color:#e85a5a;">90%</div>
+      <div class="scale-block" style="background:rgba(232,90,90,0.35);color:#e85a5a;">100%</div>
+    </div>
+    <div class="scale-label">Boxed = your ceiling. Irons reward smoothness not effort. Grip pressure 4–5 out of 10 all session — loose enough that your forearms have zero tension.</div>
+  </div>
+
+  <!-- SESSION STRIP -->
+  <div class="session-strip">
+    <div class="strip-label">Session order — 70 balls max</div>
+    <div class="strip-phases">
+      <div class="strip-phase">
+        <div class="phase-dot" style="background:#4dcc8a"></div>
+        <span>Warm up — 7 iron reference</span>
+        <div class="phase-right">
+          <div class="phase-balls">15 balls</div>
+          <div class="phase-tag" style="background:rgba(77,204,138,0.12);color:#4dcc8a;">60–65%</div>
+        </div>
+      </div>
+      <div class="strip-phase">
+        <div class="phase-dot" style="background:#5b9cf6"></div>
+        <span>Main block — 9 iron</span>
+        <div class="phase-right">
+          <div class="phase-balls">30 balls</div>
+          <div class="phase-tag" style="background:rgba(91,156,246,0.12);color:#5b9cf6;">60–65%</div>
+        </div>
+      </div>
+      <div class="strip-phase">
+        <div class="phase-dot" style="background:#f0a830"></div>
+        <span>Main block — 8 iron</span>
+        <div class="phase-right">
+          <div class="phase-balls">20 balls</div>
+          <div class="phase-tag" style="background:rgba(240,168,48,0.12);color:#f0a830;">65%</div>
+        </div>
+      </div>
+      <div class="strip-phase">
+        <div class="phase-dot" style="background:#a78bfa"></div>
+        <span>Finish — free choice</span>
+        <div class="phase-right">
+          <div class="phase-balls">5 balls</div>
+          <div class="phase-tag" style="background:rgba(167,139,250,0.12);color:#a78bfa;">enjoy it</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 1 — 7 IRON WARM UP -->
+  <div class="drill-section">
+    <div class="section-eyebrow">
+      <span>Phase 1 · Warm up</span>
+      <span>7 iron · 15 balls</span>
+    </div>
+
+    <div class="drill-card" id="drill-1" data-id="1">
+      <div class="drill-header" onclick="toggleDrill('1')">
+        <div class="drill-checkbox" onclick="toggleCheck(event,'1')">
+          <svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="drill-meta">
+          <div class="drill-tag" style="background:rgba(77,204,138,0.12);color:#4dcc8a;">7 Iron · Pattern Loader</div>
+          <div class="drill-title">Establish the feeling fast</div>
+          <div class="drill-subtitle">7 iron · 15 balls · target sub-2° FTP by ball 10</div>
+        </div>
+        <div class="expand-icon">⌄</div>
+      </div>
+      <div class="drill-body">
+        <div class="drill-why">Last session you needed 30+ balls before hitting sub-2° FTP on the 7 iron. Today's goal is to get there by ball 10. This isn't a practice block — it's a pattern loader. You're using the 7 iron to switch your brain and body into the correct mode before transferring that feeling to the 9 and 8 iron.</div>
+
+        <div class="steps-label">The only two thoughts this phase</div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(77,204,138,0.12);color:#4dcc8a;">1</div>
+          <div class="step-text"><strong>Grip check before every ball.</strong> 2.5 knuckles on the left hand. Both V's to the right shoulder. Do it consciously for all 15 balls — you're building the pre-shot routine that carries into everything else today.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(77,204,138,0.12);color:#4dcc8a;">2</div>
+          <div class="step-text"><strong>Right elbow brushes right hip on the way down.</strong> Feel the club dropping behind you rather than going over the top. That's your one swing thought. Nothing else.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(77,204,138,0.12);color:#4dcc8a;">3</div>
+          <div class="step-text">Swing at <span class="effort-inline" style="background:rgba(77,204,138,0.15);color:#4dcc8a;">60–65%</span> only. You're not trying to hit it far. You're trying to load the correct feeling as quickly as possible.</div>
+        </div>
+
+        <div class="ftp-check">
+          <div class="ftp-check-label">After ball 10 — check Toptracer FTP and find yourself here</div>
+          <div class="ftp-options">
+            <div class="ftp-option" style="background:rgba(77,204,138,0.1);border:1px solid rgba(77,204,138,0.2);">
+              <div class="ftp-val" style="color:#4dcc8a;">0–2°</div>
+              <div class="ftp-desc" style="color:var(--muted);">Pattern loaded. Move to 9 iron after ball 15.</div>
+            </div>
+            <div class="ftp-option" style="background:rgba(240,168,48,0.1);border:1px solid rgba(240,168,48,0.2);">
+              <div class="ftp-val" style="color:#f0a830;">2–4°</div>
+              <div class="ftp-desc" style="color:var(--muted);">Getting there. Finish the 15 then move on.</div>
+            </div>
+            <div class="ftp-option" style="background:rgba(232,90,90,0.1);border:1px solid rgba(232,90,90,0.2);">
+              <div class="ftp-val" style="color:#e85a5a;">4°+</div>
+              <div class="ftp-desc" style="color:var(--muted);">Check grip. Go back to basics. Add 5 more balls before moving on.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracer-box">
+          <div class="tracer-label">Session 3 benchmark to beat</div>
+          <div class="tracer-text">First 5 shots last session: 4.53° FTP. First 15 shots: 5.10° average. Today's target is under 3° average across all 15 warm up balls. That would show the pattern is genuinely bedding in between sessions.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 — 9 IRON -->
+  <div class="drill-section">
+    <div class="section-eyebrow">
+      <span>Phase 2 · Main block</span>
+      <span>9 iron · 30 balls</span>
+    </div>
+
+    <div class="drill-card" id="drill-2" data-id="2">
+      <div class="drill-header" onclick="toggleDrill('2')">
+        <div class="drill-checkbox" onclick="toggleCheck(event,'2')">
+          <svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="drill-meta">
+          <div class="drill-tag" style="background:rgba(91,156,246,0.12);color:#5b9cf6;">9 Iron · Consolidation Block</div>
+          <div class="drill-title">Confirm the 9 iron under volume</div>
+          <div class="drill-subtitle">30 balls · target sub-2° FTP throughout</div>
+        </div>
+        <div class="expand-icon">⌄</div>
+      </div>
+      <div class="drill-body">
+        <div class="drill-why">Your 9 iron showed 1.72° FTP last session but across only 9 balls. That's a promising reading not a confirmed pattern. 30 balls of blocked practice will tell you whether it holds under sustained repetition — or whether it was a small sample fluke. You're expecting it to hold because the 9 iron is shorter and easier to control than the 7 iron.</div>
+
+        <div class="steps-label">How to approach it</div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(91,156,246,0.12);color:#5b9cf6;">1</div>
+          <div class="step-text">Carry the 7 iron feeling directly into the 9 iron. <strong>Same grip, same elbow tuck, same tempo.</strong> The 9 iron is shorter so the feeling should be slightly easier to repeat — use that.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(91,156,246,0.12);color:#5b9cf6;">2</div>
+          <div class="step-text">Swing at <span class="effort-inline" style="background:rgba(77,204,138,0.15);color:#4dcc8a;">60–65%</span>. The 9 iron doesn't need effort — it has enough loft to get the ball airborne easily. You're focused on face-to-path and consistency, not distance.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(91,156,246,0.12);color:#5b9cf6;">3</div>
+          <div class="step-text">Pick a target and aim at it every shot. Not the same target every time — move it around. Left flag, middle flag, right flag. You're practising direction control, not just swinging into space.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(91,156,246,0.12);color:#5b9cf6;">4</div>
+          <div class="step-text"><strong>Check Toptracer FTP every 10 balls.</strong> After balls 10, 20 and 30. You want the number staying consistent — not dropping from ball 1 to 10 then creeping back up. Consistency across 30 balls is the proof.</div>
+        </div>
+
+        <!-- BALL TRACKER -->
+        <div class="ball-tracker">
+          <div class="ball-tracker-label">Ball tracker — tap as you hit each one</div>
+          <div class="ball-dots" id="tracker-9i"></div>
+          <div class="ball-count">Hit <span id="count-9i">0</span> of 30 balls</div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone-icon">🎯</div>
+          <div><strong>After ball 10:</strong> Check FTP. If it's under 2° you're on track. If it's over 3° go back to the elbow tuck feeling and grip check before every remaining ball.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-icon">🎯</div>
+          <div><strong>After ball 20:</strong> Check FTP again. Is it consistent with ball 10? Consistency here means the pattern is genuinely holding, not just starting well then fading.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-icon">✅</div>
+          <div><strong>After ball 30:</strong> If FTP has stayed below 2.5° across all three checks — the 9 iron pattern is confirmed. It's grooved. Move to the 8 iron with confidence.</div>
+        </div>
+
+        <div class="target-box">
+          <div class="target-label">What confirmed looks like</div>
+          <div class="target-text">FTP below 2.5° consistently across all 30 balls. Carry averaging 120–135 yards Toptracer. Offline averaging under 20 yards. Mishit rate at or below last session's 0% — the 9 iron should be your cleanest striking club.</div>
+        </div>
+        <div class="tracer-box">
+          <div class="tracer-label">Session 3 benchmark</div>
+          <div class="tracer-text">9 iron: 1.72° FTP · 133.1 yds carry · 15.3 yds offline · 0% mishit rate across 9 balls. Today's target is matching or beating all four numbers across 30 balls.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 — 8 IRON -->
+  <div class="drill-section">
+    <div class="section-eyebrow">
+      <span>Phase 3 · Main block</span>
+      <span>8 iron · 20 balls</span>
+    </div>
+
+    <div class="drill-card" id="drill-3" data-id="3">
+      <div class="drill-header" onclick="toggleDrill('3')">
+        <div class="drill-checkbox" onclick="toggleCheck(event,'3')">
+          <svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="drill-meta">
+          <div class="drill-tag" style="background:rgba(240,168,48,0.12);color:#f0a830;">8 Iron · First Real Session</div>
+          <div class="drill-title">Build the 8 iron from scratch</div>
+          <div class="drill-subtitle">20 balls · only data point was 10.25° in session 1</div>
+        </div>
+        <div class="expand-icon">⌄</div>
+      </div>
+      <div class="drill-body">
+        <div class="drill-why">Your only 8 iron data is 5 balls in session 1 at 10.25° face-to-path — your highest reading across any club in any session. It has had zero balls in sessions 2 and 3. Today you're starting fresh on this club with the grip and path work already established. Your starting point should be significantly better than 10.25° given everything you've built.</div>
+
+        <div class="steps-label">How to approach it</div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(240,168,48,0.12);color:#f0a830;">1</div>
+          <div class="step-text"><strong>Import directly from the 9 iron.</strong> Pick up the 8 iron and before your first ball say to yourself: <em>same feeling, one club longer.</em> The 8 iron sits between the 9 iron and 7 iron — both of which you now have good data on. It should slot in naturally.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(240,168,48,0.12);color:#f0a830;">2</div>
+          <div class="step-text">Swing at <span class="effort-inline" style="background:rgba(240,168,48,0.15);color:#f0a830;">65%</span>. The 8 iron is slightly longer than the 9 so there'll be a natural urge to swing a touch harder. Consciously resist it — keep the same tempo you just had on the 9 iron.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(240,168,48,0.12);color:#f0a830;">3</div>
+          <div class="step-text">Grip check before every single ball in this phase. You're on an unfamiliar club and the hands will want to drift. 2.5 knuckles on the left hand. Every shot.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(240,168,48,0.12);color:#f0a830;">4</div>
+          <div class="step-text">After the first 5 balls check Toptracer FTP. This gives you a baseline for this club today — you're writing the first real data point on the 8 iron with the corrected swing. Note the number whatever it is.</div>
+        </div>
+
+        <!-- BALL TRACKER -->
+        <div class="ball-tracker">
+          <div class="ball-tracker-label">Ball tracker — tap as you hit each one</div>
+          <div class="ball-dots" id="tracker-8i"></div>
+          <div class="ball-count">Hit <span id="count-8i">0</span> of 20 balls</div>
+        </div>
+
+        <div class="milestone">
+          <div class="milestone-icon">📊</div>
+          <div><strong>After ball 5:</strong> Note FTP. This is your 8 iron baseline for today. Whatever it is, it's the starting point — not a judgment.</div>
+        </div>
+        <div class="milestone">
+          <div class="milestone-icon">🎯</div>
+          <div><strong>After ball 15:</strong> Check FTP again. If the number has come down from ball 5 — the pattern is transferring. If it hasn't moved, go back to one thought only: elbow tuck, no more than that.</div>
+        </div>
+
+        <div class="warning-box">
+          <div class="warning-label">If the 8 iron feels wrong from the start</div>
+          <div class="warning-text">Drop back to 3 balls on the 9 iron to reset the feeling, then return to the 8 iron. You're transferring a pattern not starting from zero — going back to the reference club for a moment is not a step backwards.</div>
+        </div>
+
+        <div class="target-box">
+          <div class="target-label">Realistic target for today</div>
+          <div class="target-text">FTP below 5° by ball 10, below 3° by ball 20. That would be a massive improvement on the 10.25° from session 1 and would put the 8 iron on a par with where the 7 iron was at the end of session 2. Carry target 115–130 yards Toptracer.</div>
+        </div>
+        <div class="tracer-box">
+          <div class="tracer-label">What to send over after</div>
+          <div class="tracer-text">8 iron FTP at balls 5, 15 and 20. Carry average. Offline average. This will be the first proper 8 iron data point since session 1 and will tell us exactly where it sits relative to the 9 and 7 iron.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 — FREE -->
+  <div class="drill-section">
+    <div class="section-eyebrow">
+      <span>Phase 4 · Finish</span>
+      <span>5 balls · any club · enjoy it</span>
+    </div>
+
+    <div class="drill-card" id="drill-4" data-id="4">
+      <div class="drill-header" onclick="toggleDrill('4')">
+        <div class="drill-checkbox" onclick="toggleCheck(event,'4')">
+          <svg class="check-icon" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="drill-meta">
+          <div class="drill-tag" style="background:rgba(167,139,250,0.12);color:#a78bfa;">Free Play · End Positive</div>
+          <div class="drill-title">5 balls — your choice</div>
+          <div class="drill-subtitle">No thoughts · pick a target · commit</div>
+        </div>
+        <div class="expand-icon">⌄</div>
+      </div>
+      <div class="drill-body">
+        <div class="drill-why">You've done 65 balls of focused blocked practice. These 5 are a reward. Pick any club, pick a target, trust everything you've just drilled and swing freely. No swing thoughts.</div>
+        <div class="steps-label">The only rules</div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(167,139,250,0.12);color:#a78bfa;">1</div>
+          <div class="step-text">Pick a target before every shot. Commit to it. One pre-shot grip check, then go within 10 seconds.</div>
+        </div>
+        <div class="step">
+          <div class="step-num" style="background:rgba(167,139,250,0.12);color:#a78bfa;">2</div>
+          <div class="step-text"><strong>Finish on a good shot.</strong> If ball 5 goes badly, hit a 9 iron and end on something clean. Leave the range feeling good — that's what carries you into session 5.</div>
+        </div>
+        <div class="target-box">
+          <div class="target-label">Before you leave the bay</div>
+          <div class="target-text">Screenshot the full Toptracer session summary. Key numbers to send: 7 iron FTP across first 15 balls, 9 iron FTP at balls 10/20/30, 8 iron FTP at balls 5/15/20, carry averages on all three clubs.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="complete-banner" id="complete-banner">
+    <div class="complete-emoji">🏌️</div>
+    <div class="complete-title">Session 4 done</div>
+    <div class="complete-body">Screenshot Toptracer before you leave. Send it over — we'll compare 7 iron early-session FTP vs session 3, confirm the 9 iron under volume, and get the first real 8 iron baseline reading with the corrected swing.</div>
+  </div>
+
+  <div class="reset-wrap">
+    <button class="reset-btn" onclick="resetAll()">Reset all drills</button>
+  </div>
+
+</div>
+
+<script>
+  const TOTAL = 4;
+  const STORAGE_KEY = 'drills-s4-9i8i';
+  let done = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+
+  function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify([...done])); }
+
+  function updateProgress() {
+    document.getElementById('progress-count').textContent = done.size;
+    document.getElementById('total-count').textContent = TOTAL;
+    document.getElementById('complete-banner').classList.toggle('show', done.size === TOTAL);
+  }
+
+  function toggleCheck(e, id) {
+    e.stopPropagation();
+    const card = document.getElementById('drill-' + id);
+    if (done.has(id)) {
+      done.delete(id);
+      card.classList.remove('done');
+    } else {
+      done.add(id);
+      card.classList.add('done');
+      card.classList.remove('open');
+    }
+    save();
+    updateProgress();
+  }
+
+  function toggleDrill(id) {
+    document.getElementById('drill-' + id).classList.toggle('open');
+  }
+
+  function resetAll() {
+    done.clear();
+    save();
+    document.querySelectorAll('.drill-card').forEach(c => c.classList.remove('done', 'open'));
+    ['9i', '8i'].forEach(club => {
+      document.querySelectorAll(`#tracker-${club} .ball-dot`).forEach(d => d.classList.remove('hit'));
+      const counter = document.getElementById(`count-${club}`);
+      if (counter) counter.textContent = '0';
+    });
+    updateProgress();
+  }
+
+  // Ball trackers
+  function buildTracker(id, total) {
+    const container = document.getElementById(`tracker-${id}`);
+    const counter = document.getElementById(`count-${id}`);
+    const storageKey = `tracker-${id}-hits`;
+    let hits = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'ball-dot' + (hits.includes(i) ? ' hit' : '');
+      dot.title = `Ball ${i + 1}`;
+      dot.addEventListener('click', () => {
+        if (hits.includes(i)) {
+          hits = hits.filter(h => h !== i);
+          dot.classList.remove('hit');
+        } else {
+          hits.push(i);
+          dot.classList.add('hit');
+        }
+        localStorage.setItem(storageKey, JSON.stringify(hits));
+        counter.textContent = hits.length;
+      });
+      container.appendChild(dot);
+    }
+    counter.textContent = hits.length;
+  }
+
+  buildTracker('9i', 30);
+  buildTracker('8i', 20);
+
+  done.forEach(id => {
+    const card = document.getElementById('drill-' + id);
+    if (card) card.classList.add('done');
+  });
+  updateProgress();
+
+  for (let i = 1; i <= TOTAL; i++) {
+    if (!done.has(String(i))) {
+      document.getElementById('drill-' + i).classList.add('open');
+      break;
+    }
+  }
+</script>
+</body>
+</html>
